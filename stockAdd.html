@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>庫存管理系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container mt-4">
+      <div class="bg-dark text-white p-4 rounded mb-4">
+        <h2>庫存管理系統</h2>
+        <p>庫存操作系統，可新增、修改、刪除商品資料</p>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="product" class="form-label">商品名稱</label>
+          <input type="text" class="form-control" id="product" />
+        </div>
+        <div class="col-md-2">
+          <label for="quantity" class="form-label">數量</label>
+          <input type="number" class="form-control" id="quantity" />
+        </div>
+        <div class="col-md-2">
+          <label for="price" class="form-label">單價</label>
+          <input type="number" class="form-control" id="price" />
+        </div>
+        <div class="col-md-4">
+          <button type="button" class="btn btn-primary" id="addBtn">
+            新增資料
+          </button>
+          <button type="button" class="btn btn-warning" id="editBtn">
+            修改資料
+          </button>
+          <button type="button" class="btn btn-secondary" id="clearBtn">
+            清空欄位
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">商品名稱</th>
+            <th scope="col">數量</th>
+            <th scope="col">單價</th>
+            <th scope="col">總價</th>
+            <th scope="col">操作</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
+    <script>
+      var 修改的資料列;
+
+      $(document).ready(function () {
+        let 歷史資料訊息 = "";
+
+        function 計算總價(數量, 單價) {
+          return 數量 * 單價;
+        }
+
+        function 清空輸入欄位() {
+          $("#product").val("");
+          $("#quantity").val("");
+          $("#price").val("");
+          修改的資料列 = null;
+        }
+
+        $("#addBtn").click(function () {
+          let 商品名稱 = $("#product").val();
+          let 數量 = parseInt($("#quantity").val());
+          let 單價 = parseFloat($("#price").val());
+          let 總價 = 計算總價(數量, 單價);
+
+          //檢查
+          if (!商品名稱) {
+            alert("請輸入商品名稱！");
+            return;
+          }
+          if (typeof 數量 !== "number" || isNaN(數量)) {
+            alert("請輸入正確的商品數量（必須是數字）！");
+            return;
+          }
+          if (typeof 單價 !== "number" || isNaN(單價)) {
+            alert("請輸入正確的商品單價（必須是數字）！");
+            return;
+          }
+
+          let 新的表格列 = `
+                    <tr>
+                        <td>${商品名稱}</td>
+                        <td>${數量}</td>
+                        <td>${單價}</td>
+                        <td>${總價}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger 刪除按鈕"> 刪除</button>
+                        </td>
+                    </tr>
+                `;
+          $("#productTable").append(新的表格列);
+
+          處理表格列點擊();
+          處理刪除按鈕點擊();
+
+          清空輸入欄位();
+        });
+
+        function 處理刪除按鈕點擊() {
+          $(".刪除按鈕").click(function () {
+            $(this).parents("tr").remove();
+            清空輸入欄位();
+          });
+        }
+
+        function 處理表格列點擊() {
+          $("#productTable tr").click(function () {
+            修改的資料列 = this;
+            $("#product").val($(this).find("td:eq(0)").text());
+            $("#quantity").val($(this).find("td:eq(1)").text());
+            $("#price").val($(this).find("td:eq(2)").text());
+          });
+        }
+
+        $("#editBtn").click(function () {
+          if (!修改的資料列) {
+            alert("請先點選要修改的資料列！");
+            return;
+          }
+
+          let 商品名稱 = $("#product").val();
+          let 數量 = parseInt($("#quantity").val());
+          let 單價 = parseFloat($("#price").val());
+          let 總價 = 計算總價(數量, 單價);
+
+          $(修改的資料列).find("td:eq(0)").text(商品名稱);
+          $(修改的資料列).find("td:eq(1)").text(數量);
+          $(修改的資料列).find("td:eq(2)").text(單價);
+          $(修改的資料列).find("td:eq(3)").text(總價);
+
+          清空輸入欄位();
+        });
+
+        $("#clearBtn").click(清空輸入欄位);
+
+        處理刪除按鈕點擊();
+        處理表格列點擊();
+      });
+    </script>
+  </body>
+</html>
