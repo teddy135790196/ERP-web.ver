@@ -10,7 +10,7 @@
 
 ## 🖼️ 預覽畫面
 
-![image](https://user-images.githubusercontent.com/your-screenshot.png) <!-- 可自行上傳圖片至GitHub並貼上連結 -->
+![image](https://user-images.githubusercontent.com/stock.png) 
 
 ---
 
